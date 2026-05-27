@@ -1,0 +1,122 @@
+[
+  {
+    "nombre": "Croquetas Premium Adulto",
+    "categoria": "croquetas",
+    "descripcion": "Alimento premium para perros adultos con proteínas de alta calidad y nutrientes esenciales.",
+    "precio": 459.99,
+    "stock": 50,
+    "imagen_url": "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=400",
+    "activo": true,
+    "destacado": true
+  },
+  {
+    "nombre": "Croquetas Cachorro",
+    "categoria": "croquetas",
+    "descripcion": "Fórmula especial para cachorros en crecimiento con DHA para desarrollo cerebral.",
+    "precio": 389.99,
+    "stock": 35,
+    "imagen_url": "https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=400",
+    "activo": true,
+    "destacado": true
+  },
+  {
+    "nombre": "Collar Ajustable Nylon",
+    "categoria": "accesorios",
+    "descripcion": "Collar resistente de nylon con hebilla de liberación rápida. Disponible en varios colores.",
+    "precio": 149.99,
+    "stock": 80,
+    "imagen_url": "https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?w=400",
+    "activo": true,
+    "destacado": false
+  },
+  {
+    "nombre": "Correa Retráctil 5m",
+    "categoria": "accesorios",
+    "descripcion": "Correa retráctil de 5 metros con sistema de frenado suave y mango ergonómico.",
+    "precio": 279.99,
+    "stock": 45,
+    "imagen_url": "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400",
+    "activo": true,
+    "destacado": true
+  },
+  {
+    "nombre": "Pelota Interactiva Kong",
+    "categoria": "juguetes",
+    "descripcion": "Pelota de goma resistente ideal para juegos de buscar. Rebota de forma impredecible.",
+    "precio": 199.99,
+    "stock": 60,
+    "imagen_url": "https://images.unsplash.com/photo-1535294435445-d7249b8f0eae?w=400",
+    "activo": true,
+    "destacado": true
+  },
+  {
+    "nombre": "Hueso Mordedor",
+    "categoria": "juguetes",
+    "descripcion": "Hueso de nylon duradero para masticar. Ayuda a limpiar los dientes y reducir el estrés.",
+    "precio": 129.99,
+    "stock": 70,
+    "imagen_url": "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=400",
+    "activo": true,
+    "destacado": false
+  },
+  {
+    "nombre": "Shampoo Antipulgas",
+    "categoria": "higiene",
+    "descripcion": "Shampoo medicado que elimina pulgas y garrapatas. Fórmula suave con aloe vera.",
+    "precio": 189.99,
+    "stock": 40,
+    "imagen_url": "https://images.unsplash.com/photo-1583337130417-13104dec14a3?w=400",
+    "activo": true,
+    "destacado": false
+  },
+  {
+    "nombre": "Kit de Aseo Completo",
+    "categoria": "higiene",
+    "descripcion": "Incluye cepillo, cortaúñas, peine y toallas. Todo lo necesario para el cuidado de tu mascota.",
+    "precio": 349.99,
+    "stock": 25,
+    "imagen_url": "https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=400",
+    "activo": true,
+    "destacado": true
+  },
+  {
+    "nombre": "Cama Ortopédica Grande",
+    "categoria": "camas",
+    "descripcion": "Cama con espuma viscoelástica para perros grandes. Alivia presión en articulaciones.",
+    "precio": 899.99,
+    "stock": 15,
+    "imagen_url": "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400",
+    "activo": true,
+    "destacado": true
+  },
+  {
+    "nombre": "Cama Donut Pequeña",
+    "categoria": "camas",
+    "descripcion": "Cama redonda tipo donut ultra suave. Perfecta para perros pequeños y gatos.",
+    "precio": 449.99,
+    "stock": 30,
+    "imagen_url": "https://images.unsplash.com/photo-1567612529009-afe25413be6c?w=400",
+    "activo": true,
+    "destacado": false
+  },
+  {
+    "nombre": "Croquetas Gato Indoor",
+    "categoria": "croquetas",
+    "descripcion": "Alimento especial para gatos de interior. Control de peso y bolas de pelo.",
+    "precio": 329.99,
+    "stock": 40,
+    "imagen_url": "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400",
+    "activo": true,
+    "destacado": false
+  },
+  {
+    "nombre": "Arnés Deportivo",
+    "categoria": "accesorios",
+    "descripcion": "Arnés acolchado con bandas reflectantes para paseos nocturnos seguros.",
+    "precio": 329.99,
+    "stock": 55,
+    "imagen_url": "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400",
+    "activo": true,
+    "destacado": false
+  }
+]
