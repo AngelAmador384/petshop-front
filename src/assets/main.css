@@ -1,0 +1,116 @@
+/* ============================================================
+   PetShop MX - Global Styles
+   ============================================================ */
+
+:root {
+    --paw-orange: #F97316;
+    --paw-yellow: #FBBF24;
+    --paw-green: #10B981;
+    --paw-blue: #3B82F6;
+    --paw-pink: #EC4899;
+    --paw-purple: #8B5CF6;
+    --bg-cream: #FFF8F0;
+    --bg-warm: #FFFBEB;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg-cream);
+    color: #1e293b;
+}
+
+h1, h2, h3 {
+    line-height: 1.2;
+}
+
+p {
+    line-height: 1.6;
+}
+
+.font-fredoka {
+    font-family: 'Fredoka One', cursive;
+}
+
+/* Paw print pattern background - REMOVED */
+.paw-bg {
+    background: var(--bg-cream);
+}
+
+/* ============================================================
+   Custom Scrollbar
+   ============================================================ */
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #FEF3C7; }
+::-webkit-scrollbar-thumb { background: #F97316; border-radius: 4px; }
+
+/* ============================================================
+   Component Styles
+   ============================================================ */
+
+/* Product card - No hover effects */
+.product-card {
+    /* Static styles only */
+}
+
+/* Flat color text */
+.gradient-text {
+    color: #F97316;
+}
+
+/* Toast notification - No animations */
+.toast-enter { opacity: 1; }
+.toast-exit { opacity: 0; }
+
+/* Modal backdrop */
+.modal-backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Category pill - No hover effects */
+.category-pill {
+    /* Static styles only */
+}
+
+/* Hero flat color */
+.hero-gradient {
+    background: #FFEDD5;
+}
+
+/* Nav solid background */
+.nav-glass {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(249, 115, 22, 0.1);
+}
+
+/* Badge - No animations */
+.badge-bounce { }
+
+/* Input focus */
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+}
+
+/* Star rating - No hover effects */
+.star { cursor: pointer; }
+
+/* Line clamp utilities */
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
