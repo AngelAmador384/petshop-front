@@ -23,7 +23,6 @@ onMounted(async () => {
       estado.value = 'exito'
       mensaje.value = data.mensaje
       
-      // Opcional: Redirigir al login después de 3 segundos
       setTimeout(() => {
         router.push('/login')
       }, 3000)

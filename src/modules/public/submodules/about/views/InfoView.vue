@@ -91,7 +91,6 @@ const values = [
     { icon: '🏆', title: 'Calidad Premium', desc: 'Solo ofrecemos marcas de primera calidad, con ingredientes naturales y duraderos.' },
 ];
 
-// Array de equipo actualizado: cambiamos 'emoji' por 'image' con URLs reales
 const team = [
     {
         name: 'Dr. Isaias',

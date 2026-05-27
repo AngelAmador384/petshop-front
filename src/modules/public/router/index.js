@@ -17,7 +17,6 @@ const PublicRoutes = [
     { path: '/cuenta', name: 'cuenta', component: AccountView, meta: { requiresAuth: true } },
     { path: '/perfil', redirect: '/cuenta' }, // Redirect old route
     { path: '/checkout', name: 'checkout', component: CheckoutView, meta: { requiresAuth: true } },
-    // Nuevas rutas
     { path: '/mascotas', name: 'mascotas', component: MascotasView, meta: { requiresAuth: true } },
     { path: '/recomendaciones/:id', name: 'recomendaciones', component: RecomendacionesView, meta: { requiresAuth: true } },
     { path: '/packs', name: 'packs', component: PacksView },

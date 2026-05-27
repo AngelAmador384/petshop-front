@@ -15,7 +15,6 @@
     const activeTab = ref('dashboard')
     const npError = ref('')
     
-    // NUEVO: Variable para saber si estamos editando un producto existente
     const editingId = ref(null)
     const URL_BACKEND = import.meta.env.VITE_BACKEND_URL
 
@@ -37,7 +36,6 @@
         return categoryEmojis[cat] || '📦'
     }
 
-    // NUEVO: Función para limpiar el formulario
     function resetForm() {
         editingId.value = null
         npError.value = ''
@@ -49,7 +47,6 @@
         npForm.imagen_url = ''
     }
 
-    // NUEVO: Función para cargar los datos en el formulario y cambiar a la pestaña de edición
     function startEdit(producto) {
         editingId.value = producto.id
         npForm.nombre = producto.nombre
@@ -63,7 +60,6 @@
         activeTab.value = 'nuevo'
     }
 
-    // NUEVO: Función para desactivar (borrar) un producto
     async function deleteProducto(id) {
         if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) return
 
@@ -85,7 +81,6 @@
         }
     }
 
-    // MODIFICADO: Ahora maneja tanto la creación como la actualización
     async function handleNewProduct() {
         npError.value = ''
 
@@ -109,7 +104,6 @@
         }
 
         if (editingId.value) {
-            // Lógica para ACTUALIZAR
             try {
                 const res = await fetch(`${URL_BACKEND}/productos/${editingId.value}`, {
                     method: 'PUT',
@@ -132,7 +126,6 @@
                 npError.value = 'Error de conexión con el servidor'
             }
         } else {
-            // Lógica original para CREAR
             const res = await controlStore.addProducto(payload)
 
             if (res.status === 201) {
