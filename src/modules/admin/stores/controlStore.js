@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-const URL_BACKEND = 'http://127.0.0.1:5000'
+const URL_BACKEND = import.meta.env.VITE_BACKEND_URL
 
 export const useControlStore = defineStore('control', () => {
     const stats = ref(null)

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
-const URL_BACKEND = 'http://127.0.0.1:5000'
+const URL_BACKEND = import.meta.env.VITE_BACKEND_URL
 
 export const useRecordsStore = defineStore('registros', () => {
     const categorias = ref(['croquetas', 'accesorios', 'juguetes', 'higiene', 'camas'])

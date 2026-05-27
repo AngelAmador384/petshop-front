@@ -83,7 +83,7 @@ import { reactive, ref } from 'vue';
 import { useToastStore } from '@/modules/public/stores/toastStore';
 
 const toastStore = useToastStore();
-const URL_BACKEND = 'http://127.0.0.1:5000';
+const URL_BACKEND = import.meta.env.VITE_BACKEND_URL;
 
 const values = [
     { icon: '❤️', title: 'Amor por las mascotas', desc: 'Cada producto es seleccionado pensando en el bienestar de tu compañero peludo.' },

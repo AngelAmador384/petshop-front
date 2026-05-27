@@ -5,7 +5,7 @@
     import { useToastStore } from '@/modules/public/stores/toastStore'
     import { useRouter } from 'vue-router'
 
-    const URL_BACKEND = 'http://127.0.0.1:5000'
+    const URL_BACKEND = import.meta.env.VITE_BACKEND_URL
 
     const cartStore = useCartStore()
     const sessionStore = useSessionStore()

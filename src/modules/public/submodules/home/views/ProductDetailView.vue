@@ -6,7 +6,7 @@
     import { useToastStore } from '@/modules/public/stores/toastStore'
     import ItemCard from '@/modules/public/components/ItemCard.vue'
 
-    const URL_BACKEND = 'http://127.0.0.1:5000'
+    const URL_BACKEND = import.meta.env.VITE_BACKEND_URL
 
     const route = useRoute()
     const router = useRouter()
