@@ -30,7 +30,6 @@ export const useSessionStore = defineStore('session', () => {
             if (res.ok) {
                 user.value = data.user
                 isAuthenticated.value = true
-                localStorage.setItem('petshop_user', JSON.stringify(data.user))
             }
 
             return { status: res.status, data }
@@ -70,10 +69,14 @@ export const useSessionStore = defineStore('session', () => {
         }
         user.value = null
         isAuthenticated.value = false
-        localStorage.removeItem('petshop_user')
     }
 
     async function checkSession() {
+        // Si ya hay datos persistidos, no es necesario verificar con el backend inmediatamente
+        if (user.value && isAuthenticated.value) {
+            return
+        }
+
         try {
             const res = await fetch(`${URL_BACKEND}/sesion`, {
                 credentials: 'include'
@@ -83,22 +86,10 @@ export const useSessionStore = defineStore('session', () => {
             if (data.autenticado && data.user) {
                 user.value = data.user
                 isAuthenticated.value = true
-                localStorage.setItem('petshop_user', JSON.stringify(data.user))
-            } else {
-                // Intentar restaurar desde localStorage
-                const saved = localStorage.getItem('petshop_user')
-                if (saved) {
-                    user.value = JSON.parse(saved)
-                    isAuthenticated.value = true
-                }
             }
         } catch (err) {
-            // Si el backend no responde, intentar localStorage
-            const saved = localStorage.getItem('petshop_user')
-            if (saved) {
-                user.value = JSON.parse(saved)
-                isAuthenticated.value = true
-            }
+            // Si el backend no responde, mantener el estado persistido
+            console.warn('No se pudo verificar la sesión con el backend')
         }
     }
 
@@ -106,5 +97,11 @@ export const useSessionStore = defineStore('session', () => {
         user, isAuthenticated, loading,
         nombreBienvenida, isAdmin,
         login, register, logout, checkSession
+    }
+}, {
+    persist: {
+        key: 'petshop_session',
+        storage: localStorage,
+        paths: ['user', 'isAuthenticated']
     }
 })
