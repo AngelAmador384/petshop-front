@@ -14,6 +14,10 @@
 
     const activeTab = ref('dashboard')
     const npError = ref('')
+    
+    // NUEVO: Variable para saber si estamos editando un producto existente
+    const editingId = ref(null)
+    const URL_BACKEND = import.meta.env.VITE_BACKEND_URL
 
     const npForm = reactive({
         nombre: '', categoria: '', descripcion: '',
@@ -21,7 +25,7 @@
     })
 
     const categoryEmojis = {
-        croquetas: '🦴', accesorios: '🎀', juguetes: '🎾', higiene: '🛁', camas: '🛏️'
+        croquetas: '🦴', accesorios: '🎀', juguetes: '🎾', higiene: '🛁', camas: '🛏️', snacks: '🍞', medicamentos: '💊'
     }
 
     const categoryColors = {
@@ -33,6 +37,55 @@
         return categoryEmojis[cat] || '📦'
     }
 
+    // NUEVO: Función para limpiar el formulario
+    function resetForm() {
+        editingId.value = null
+        npError.value = ''
+        npForm.nombre = ''
+        npForm.categoria = ''
+        npForm.descripcion = ''
+        npForm.precio = ''
+        npForm.stock = ''
+        npForm.imagen_url = ''
+    }
+
+    // NUEVO: Función para cargar los datos en el formulario y cambiar a la pestaña de edición
+    function startEdit(producto) {
+        editingId.value = producto.id
+        npForm.nombre = producto.nombre
+        npForm.categoria = producto.categoria
+        npForm.descripcion = producto.descripcion
+        npForm.precio = producto.precio
+        npForm.stock = producto.stock
+        npForm.imagen_url = producto.imagen_url || ''
+        
+        npError.value = ''
+        activeTab.value = 'nuevo'
+    }
+
+    // NUEVO: Función para desactivar (borrar) un producto
+    async function deleteProducto(id) {
+        if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) return
+
+        try {
+            const res = await fetch(`${URL_BACKEND}/productos/${id}/desactivar`, {
+                method: 'PUT',
+                credentials: 'include'
+            })
+            
+            if (res.ok) {
+                toastStore.show('Producto eliminado exitosamente', 'success')
+                await recordsStore.fetchProductos() // Recarga la tabla
+                controlStore.fetchStats() // Actualiza las estadísticas
+            } else {
+                toastStore.show('Error al eliminar el producto', 'error')
+            }
+        } catch (error) {
+            toastStore.show('Error de conexión', 'error')
+        }
+    }
+
+    // MODIFICADO: Ahora maneja tanto la creación como la actualización
     async function handleNewProduct() {
         npError.value = ''
 
@@ -46,27 +99,51 @@
             return
         }
 
-        const res = await controlStore.addProducto({
+        const payload = {
             nombre: npForm.nombre,
             categoria: npForm.categoria,
             descripcion: npForm.descripcion,
             precio: npForm.precio,
             stock: npForm.stock,
             imagen_url: npForm.imagen_url || undefined
-        })
+        }
 
-        if (res.status === 201) {
-            toastStore.show('¡Producto creado exitosamente! 📦', 'success')
-            await recordsStore.fetchProductos()
-            npForm.nombre = ''
-            npForm.categoria = ''
-            npForm.descripcion = ''
-            npForm.precio = ''
-            npForm.stock = ''
-            npForm.imagen_url = ''
-            activeTab.value = 'productos'
+        if (editingId.value) {
+            // Lógica para ACTUALIZAR
+            try {
+                const res = await fetch(`${URL_BACKEND}/productos/${editingId.value}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                })
+
+                if (res.ok) {
+                    toastStore.show('¡Producto actualizado exitosamente! ✏️', 'success')
+                    await recordsStore.fetchProductos()
+                    controlStore.fetchStats()
+                    resetForm()
+                    activeTab.value = 'productos'
+                } else {
+                    const data = await res.json()
+                    npError.value = data.error || 'Error al actualizar producto'
+                }
+            } catch (error) {
+                npError.value = 'Error de conexión con el servidor'
+            }
         } else {
-            npError.value = res.data.error || 'Error al crear producto'
+            // Lógica original para CREAR
+            const res = await controlStore.addProducto(payload)
+
+            if (res.status === 201) {
+                toastStore.show('¡Producto creado exitosamente! 📦', 'success')
+                await recordsStore.fetchProductos()
+                controlStore.fetchStats()
+                resetForm()
+                activeTab.value = 'productos'
+            } else {
+                npError.value = res.data?.error || 'Error al crear producto'
+            }
         }
     }
 
@@ -94,25 +171,23 @@
                 </div>
             </div>
 
-            <!-- Tabs -->
             <div class="flex flex-wrap gap-2 mb-6 bg-white rounded-xl p-2 shadow-sm border">
                 <button v-for="tab in [
                     { key: 'dashboard', label: 'Dashboard', icon: '📊' },
                     { key: 'productos', label: 'Productos', icon: '📦' },
                     { key: 'usuarios', label: 'Usuarios', icon: '👥' },
                     { key: 'pedidos', label: 'Pedidos', icon: '🧾' },
-                    { key: 'nuevo', label: 'Nuevo Producto', icon: '➕' },
+                    { key: 'nuevo', label: editingId ? 'Editar Producto' : 'Nuevo Producto', icon: editingId ? '✏️' : '➕' },
                 ]" :key="tab.key"
                     @click="activeTab = tab.key"
                     :class="[
-                        'px-4 py-2 rounded-lg text-sm font-semibold ',
-                        activeTab === tab.key ? 'bg-purple-600 text-white shadow-md' : 'text-gray-600 '
+                        'px-4 py-2 rounded-lg text-sm font-semibold transition-colors',
+                        activeTab === tab.key ? 'bg-purple-600 text-white shadow-md' : 'text-gray-600 hover:bg-gray-50'
                     ]">
                     {{ tab.icon }} {{ tab.label }}
                 </button>
             </div>
 
-            <!-- Dashboard Tab -->
             <div v-if="activeTab === 'dashboard'" class="">
                 <div v-if="!controlStore.stats" class="text-center py-12">
                     <p class="text-gray-400">Cargando estadísticas...</p>
@@ -132,7 +207,6 @@
                         </div>
                     </div>
 
-                    <!-- Category breakdown -->
                     <div class="bg-white rounded-2xl shadow-md p-6 border border-purple-100">
                         <h3 class="font-bold text-lg text-gray-800 mb-4">📊 Productos por Categoría</h3>
                         <div class="space-y-3">
@@ -142,7 +216,7 @@
                                     <span class="text-gray-500">{{ count }} ({{ Math.round((count / controlStore.stats.total_productos) * 100) }}%)</span>
                                 </div>
                                 <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
-                                    <div :class="[categoryColors[cat] || 'bg-gray-400', 'h-full rounded-full  duration-1000']"
+                                    <div :class="[categoryColors[cat] || 'bg-gray-400', 'h-full rounded-full transition-all duration-1000']"
                                         :style="{ width: Math.round((count / controlStore.stats.total_productos) * 100) + '%' }">
                                     </div>
                                 </div>
@@ -152,7 +226,6 @@
                 </template>
             </div>
 
-            <!-- Products Tab -->
             <div v-if="activeTab === 'productos'" class="bg-white rounded-2xl shadow-md border border-purple-100 overflow-hidden ">
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -163,14 +236,15 @@
                                 <th class="px-4 py-3 text-left text-xs font-bold text-purple-700">Categoría</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-purple-700">Precio</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-purple-700">Stock</th>
+                                <th class="px-4 py-3 text-center text-xs font-bold text-purple-700">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            <tr v-for="p in recordsStore.productos" :key="p.id" class="/50 ">
+                            <tr v-for="p in recordsStore.productos" :key="p.id" class="hover:bg-purple-50/50 transition-colors">
                                 <td class="px-4 py-3 text-sm text-gray-500">#{{ p.id }}</td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center gap-3">
-                                        <img :src="p.imagen_url" class="w-10 h-10 rounded-lg object-cover">
+                                        <img :src="p.imagen_url || 'https://via.placeholder.com/150'" class="w-10 h-10 rounded-lg object-cover">
                                         <span class="text-sm font-semibold text-gray-700">{{ p.nombre }}</span>
                                     </div>
                                 </td>
@@ -179,15 +253,27 @@
                                 </td>
                                 <td class="px-4 py-3 text-sm font-bold text-gray-700">${{ p.precio.toFixed(2) }}</td>
                                 <td class="px-4 py-3">
-                                    <span :class="['text-sm font-semibold', p.stock < 15 ? 'text-red-500' : 'text-green-600']">{{ p.stock }}</span>
+                                    <span :class="['text-sm font-bold', p.stock < 15 ? 'text-red-500' : 'text-green-600']">{{ p.stock }}</span>
+                                </td>
+                                <td class="px-4 py-3 text-center">
+                                    <div class="flex justify-center gap-2">
+                                        <button @click="startEdit(p)" class="p-1.5 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors" title="Editar">
+                                            ✏️
+                                        </button>
+                                        <button @click="deleteProducto(p.id)" class="p-1.5 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors" title="Eliminar">
+                                            🗑️
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <div v-if="recordsStore.productos.length === 0" class="p-8 text-center text-gray-500">
+                        No hay productos registrados activos.
+                    </div>
                 </div>
             </div>
 
-            <!-- Users Tab -->
             <div v-if="activeTab === 'usuarios'" class="bg-white rounded-2xl shadow-md border border-purple-100 overflow-hidden ">
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -201,7 +287,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            <tr v-for="u in controlStore.usuarios" :key="u.id" class="/50 ">
+                            <tr v-for="u in controlStore.usuarios" :key="u.id" class="hover:bg-purple-50/50 transition-colors">
                                 <td class="px-4 py-3 text-sm text-gray-500">#{{ u.id }}</td>
                                 <td class="px-4 py-3 text-sm font-semibold text-gray-700">{{ u.nombre }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-500">{{ u.correo }}</td>
@@ -218,7 +304,6 @@
                 </div>
             </div>
 
-            <!-- Orders Tab -->
             <div v-if="activeTab === 'pedidos'" class="">
                 <div v-if="controlStore.pedidos.length === 0"
                     class="bg-white rounded-2xl shadow-md p-12 text-center border border-purple-100">
@@ -239,21 +324,27 @@
                 </div>
             </div>
 
-            <!-- New Product Tab -->
             <div v-if="activeTab === 'nuevo'" class="max-w-2xl mx-auto ">
                 <div class="bg-white rounded-2xl shadow-md p-6 border border-purple-100">
-                    <h3 class="font-bold text-lg text-gray-800 mb-4">➕ Agregar Nuevo Producto</h3>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg text-gray-800">
+                            {{ editingId ? '✏️ Editar Producto' : '➕ Agregar Nuevo Producto' }}
+                        </h3>
+                        <button v-if="editingId" @click="resetForm(); activeTab = 'productos'" class="text-sm text-red-500 font-semibold hover:underline">
+                            Cancelar edición
+                        </button>
+                    </div>
                     <form @submit.prevent="handleNewProduct" class="space-y-4">
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-600 mb-1">Nombre del producto</label>
                                 <input type="text" v-model="npForm.nombre" placeholder="Ej: Croquetas Premium"
-                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 " required>
+                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 outline-none transition-colors" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-600 mb-1">Categoría</label>
                                 <select v-model="npForm.categoria"
-                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 " required>
+                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 outline-none transition-colors" required>
                                     <option value="">Seleccionar...</option>
                                     <option value="croquetas">🦴 Croquetas</option>
                                     <option value="juguetes">🎾 Juguetes</option>
@@ -266,24 +357,24 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-600 mb-1">Descripción</label>
                             <textarea v-model="npForm.descripcion" rows="3" placeholder="Describe el producto..."
-                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400  resize-none" required></textarea>
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 outline-none transition-colors resize-none" required></textarea>
                         </div>
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-600 mb-1">Precio (MXN)</label>
                                 <input type="number" v-model="npForm.precio" step="0.01" min="1" placeholder="0.00"
-                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 " required>
+                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 outline-none transition-colors" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-600 mb-1">Stock</label>
                                 <input type="number" v-model="npForm.stock" min="0" placeholder="0"
-                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 " required>
+                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 outline-none transition-colors" required>
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-600 mb-1">URL de imagen (opcional)</label>
                             <input type="url" v-model="npForm.imagen_url" placeholder="https://..."
-                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 ">
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 outline-none transition-colors">
                         </div>
 
                         <div v-if="npError" class="bg-red-50 text-red-600 text-sm p-3 rounded-xl border border-red-200">
@@ -291,8 +382,11 @@
                         </div>
 
                         <button type="submit"
-                            class="w-full py-3 bg-purple-500 text-white font-bold rounded-xl shadow-md">
-                            📦 Agregar Producto
+                            :class="[
+                                'w-full py-3 font-bold rounded-xl shadow-md transition-colors text-white',
+                                editingId ? 'bg-blue-500 hover:bg-blue-600' : 'bg-purple-500 hover:bg-purple-600'
+                            ]">
+                            {{ editingId ? 'Guardar Cambios' : '📦 Agregar Producto' }}
                         </button>
                     </form>
                 </div>
