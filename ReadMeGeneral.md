@@ -223,9 +223,6 @@ El frontend utiliza la siguiente variable de entorno configurada en Vercel:
 - **Backend**: [AngelAmador384/petshop-back](https://github.com/AngelAmador384/petshop-back)
 - **Frontend**: [AngelAmador384/petshop-front](https://github.com/AngelAmador384/petshop-front)
 
-### Contacto y Soporte
-Para reportar problemas o sugerencias, crear un issue en el repositorio correspondiente.
-
 ---
 
 **Última actualización**: 2026-05-28
