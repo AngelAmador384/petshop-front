@@ -80,29 +80,8 @@ petshop-front/
 - ✅ Gestión de carrito de compras
 - ✅ Búsqueda y filtrado de productos
 
-## 🤝 Contribuir
-
-Las contribuciones son bienvenidas. Para contribuir a este proyecto:
-
-1. Haz un fork del repositorio
-2. Crea una rama para tu característica (`git checkout -b feature/AmazingFeature`)
-3. Realiza tus cambios y haz commit (`git commit -m 'Add some AmazingFeature'`)
-4. Haz push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## 📝 Licencia
-
-Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
-
 ## 👤 Autor
 
 **Ángel Amador**
 - GitHub: [@AngelAmador384](https://github.com/AngelAmador384)
 
-## 📞 Soporte
-
-Si encuentras problemas o tienes sugerencias, por favor abre un issue en el repositorio.
-
----
-
-⭐ Si te resultó útil este proyecto, no olvides darle una estrella en GitHub.
